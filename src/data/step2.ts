@@ -240,6 +240,122 @@ add_action( 'wp_enqueue_scripts', static function (): void {
 add_filter( 'xmlrpc_enabled', '__return_false' );
 `,
   },
+  {
+    name: "assets/css/critical.css",
+    lang: "css",
+    note: "Исходник живёт в SCSS-партиале и жмётся cssnano до ~2,6 КБ. Правило одно: сюда попадает только то, что видно до конца первого экрана.",
+    code: `/*!
+ * KARKAS — critical.css (~3 КБ, инлайнится в <head>).
+ * Только первый экран: шрифты, сброс, контейнер, шапка, герой, кнопки.
+ * Всё остальное — в main.css, который грузится неблокирующе.
+ */
+
+@font-face {
+	font-family: "Golos Text";
+	src: url("../fonts/golos-text-400.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap; /* текст виден сразу, подмена без FOIT */
+}
+
+@font-face {
+	font-family: "Golos Text";
+	src: url("../fonts/golos-text-700.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	font-family: "Golos Text", system-ui, sans-serif;
+	font-size: 16px;
+	line-height: 1.55;
+	color: #14181f;
+	background: #f4f5f2;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+
+.container {
+	width: min(1160px, 100% - 40px);
+	margin-inline: auto;
+}
+
+/* Шапка */
+.site-header { border-bottom: 1px solid #d5d9d3; }
+.site-header__inner {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	min-height: 64px;
+}
+.site-nav__list {
+	display: flex;
+	gap: 22px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.burger { display: none; } /* на <768px его покажет main.css */
+
+/* Герой — LCP-зона */
+.hero { padding: 56px 0 64px; }
+.hero__title {
+	margin: 12px 0 0;
+	font-size: clamp(28px, 6vw, 56px);
+	line-height: 1.06;
+}
+.hero__lead {
+	max-width: 620px;
+	margin: 18px 0 0;
+	font-size: clamp(16px, 2.4vw, 19px);
+}
+.hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-top: 28px;
+}
+
+/* Кнопки */
+.btn {
+	display: inline-block;
+	padding: 14px 24px;
+	font-weight: 700;
+	text-decoration: none;
+}
+.btn--primary { background: #0b50d0; color: #f2f4f1; }
+.btn--ghost { border: 2px solid #14181f; color: #14181f; }
+
+/* Служебное */
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+.skip-link {
+	position: absolute;
+	left: -9999px;
+	top: 0;
+	z-index: 99;
+	padding: 10px 16px;
+	background: #14181f;
+	color: #f2f4f1;
+}
+.skip-link:focus { left: 8px; top: 8px; }
+`,
+  },
 ];
 
 export const STEP2_NOTES = [

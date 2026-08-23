@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { StepOne } from "./components/StepOne";
 import { StepCode } from "./components/StepCode";
+import { HeadCleanup } from "./components/HeadCleanup";
+import { LoadTimeline } from "./components/LoadTimeline";
 import { RevealDemo } from "./components/RevealDemo";
 import { FlowDiagram } from "./components/FlowDiagram";
 import { Checklist } from "./components/Checklist";
@@ -13,7 +15,7 @@ import { STEP5_FILES, STEP5_NOTES, SECURITY_CHECKS, TG_SETUP } from "./data/step
 
 const STEPS = [
   { num: "01", short: "Структура", title: "Структура темы", meta: "~20 файлов" },
-  { num: "02", short: "Фундамент", title: "style.css + functions.php", meta: "5 файлов" },
+  { num: "02", short: "Фундамент", title: "style.css + functions.php", meta: "6 файлов" },
   { num: "03", short: "Каркас HTML", title: "header.php + footer.php", meta: "2 файла" },
   { num: "04", short: "Главная", title: "front-page.php + анимации", meta: "5 файлов" },
   { num: "05", short: "Лиды в Telegram", title: "AJAX-форма → Telegram", meta: "4 файла" },
@@ -34,7 +36,8 @@ const TICKER = [
   "LCP · CLS · INP",
 ];
 
-const STEP_KEY = "karkas-active-step";
+// r2: чертёж открыт на текущем листе диалога (Шаг 02)
+const STEP_KEY = "karkas-active-step-r2";
 const VISITED_KEY = "karkas-visited-steps";
 
 function Logo() {
@@ -61,7 +64,7 @@ export default function App() {
       const saved = Number(localStorage.getItem(STEP_KEY));
       if (saved >= 1 && saved <= 5) return saved;
     } catch { /* noop */ }
-    return 1;
+    return 2;
   });
   const [visited, setVisited] = useState<Set<number>>(() => {
     try {
@@ -236,7 +239,14 @@ export default function App() {
                 notes={STEP2_NOTES}
                 onPrev={() => go(1)}
                 onNext={() => go(3)}
-              />
+              >
+                <Reveal>
+                  <HeadCleanup />
+                </Reveal>
+                <Reveal delay={80}>
+                  <LoadTimeline />
+                </Reveal>
+              </StepCode>
             )}
 
             {step === 3 && (
