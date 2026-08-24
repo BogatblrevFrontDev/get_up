@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "karkas-security-checks";
 
-export function Checklist({ items }: { items: string[] }) {
+export function Checklist({ items, storageKey = STORAGE_KEY }: { items: string[]; storageKey?: string }) {
   const [checked, setChecked] = useState<boolean[]>(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(storageKey);
       if (raw) {
         const parsed = JSON.parse(raw) as boolean[];
         if (Array.isArray(parsed) && parsed.length === items.length) return parsed;

@@ -3,6 +3,8 @@ import { StepOne } from "./components/StepOne";
 import { StepCode } from "./components/StepCode";
 import { HeadCleanup } from "./components/HeadCleanup";
 import { LoadTimeline } from "./components/LoadTimeline";
+import { PageWireframe } from "./components/PageWireframe";
+import { FontSpec } from "./components/FontSpec";
 import { RevealDemo } from "./components/RevealDemo";
 import { FlowDiagram } from "./components/FlowDiagram";
 import { Checklist } from "./components/Checklist";
@@ -36,9 +38,20 @@ const TICKER = [
   "LCP · CLS · INP",
 ];
 
-// r2: чертёж открыт на текущем листе диалога (Шаг 02)
-const STEP_KEY = "karkas-active-step-r2";
+// r3: чертёж открыт на текущем листе диалога (Шаг 03)
+const STEP_KEY = "karkas-active-step-r3";
 const VISITED_KEY = "karkas-visited-steps";
+
+const A11Y_CHECKS = [
+  "<html lang> — через language_attributes(), а не хардкодом",
+  "skip-link — первый элемент <body>, виден при фокусе с клавиатуры",
+  "aria-label у каждой зоны <nav> — шапка, мобильное меню, подвал",
+  "бургер: aria-expanded + aria-controls + скрытый текст для скринридера",
+  "логотип — img с width/height: сдвиг макета (CLS) равен нулю",
+  "fallback_cb => false — никакого автогенерируемого меню",
+  "wp_footer() ровно один раз, непосредственно перед </body>",
+  "ссылка на политику конфиденциальности — get_privacy_policy_url()",
+];
 
 function Logo() {
   return (
@@ -64,7 +77,7 @@ export default function App() {
       const saved = Number(localStorage.getItem(STEP_KEY));
       if (saved >= 1 && saved <= 5) return saved;
     } catch { /* noop */ }
-    return 2;
+    return 3;
   });
   const [visited, setVisited] = useState<Set<number>>(() => {
     try {
@@ -253,12 +266,24 @@ export default function App() {
               <StepCode
                 num="03"
                 title="header.php и footer.php"
-                lead="Чистый семантический HTML: <head> на три строки плюс wp_head(), самозагружаемые шрифты, skip-link и aria-разметка. Всё тяжёлое уже вынесено в модули из шага 02."
+                lead="Чистый семантический HTML: <head> на три строки плюс wp_head(), самозагружаемые шрифты без единого CDN, skip-link и полная aria-разметка. Всё тяжёлое уже вынесено в модули из шага 02 — шаблоны остались только разметкой."
                 files={STEP3_FILES}
                 notes={STEP3_NOTES}
                 onPrev={() => go(2)}
                 onNext={() => go(4)}
-              />
+              >
+                <Reveal>
+                  <PageWireframe />
+                </Reveal>
+                <Reveal delay={80}>
+                  <FontSpec />
+                </Reveal>
+                <Reveal delay={120}>
+                  <div className="max-w-xl">
+                    <Checklist items={A11Y_CHECKS} storageKey="karkas-a11y-checks" />
+                  </div>
+                </Reveal>
+              </StepCode>
             )}
 
             {step === 4 && (
