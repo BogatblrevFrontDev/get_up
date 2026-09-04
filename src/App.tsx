@@ -5,6 +5,8 @@ import { HeadCleanup } from "./components/HeadCleanup";
 import { LoadTimeline } from "./components/LoadTimeline";
 import { PageWireframe } from "./components/PageWireframe";
 import { FontSpec } from "./components/FontSpec";
+import { AssemblyMap } from "./components/AssemblyMap";
+import { PipelineLab } from "./components/PipelineLab";
 import { RevealDemo } from "./components/RevealDemo";
 import { FlowDiagram } from "./components/FlowDiagram";
 import { Checklist } from "./components/Checklist";
@@ -38,8 +40,8 @@ const TICKER = [
   "LCP · CLS · INP",
 ];
 
-// r3: чертёж открыт на текущем листе диалога (Шаг 03)
-const STEP_KEY = "karkas-active-step-r3";
+// r4: чертёж открыт на текущем листе диалога (Шаг 04)
+const STEP_KEY = "karkas-active-step-r4";
 const VISITED_KEY = "karkas-visited-steps";
 
 const A11Y_CHECKS = [
@@ -51,6 +53,19 @@ const A11Y_CHECKS = [
   "fallback_cb => false — никакого автогенерируемого меню",
   "wp_footer() ровно один раз, непосредственно перед </body>",
   "ссылка на политику конфиденциальности — get_privacy_policy_url()",
+];
+
+// чек-лист производительности главной (лист 04)
+const FRONT_CHECKS = [
+  "Главная — только порядок секций: логика в inc/, вёрстка в template-parts/",
+  "LCP-элемент (hero) полностью покрыт critical.css — не ждёт main.css",
+  "У героя нет loading='lazy' — он и есть LCP; у всего ниже — lazy обязателен",
+  "decoding='async' на всех миниатюрах — декодирование вне главного потока",
+  "WP_Query с no_found_rows: true — без второго запроса COUNT(*)",
+  "Reveal анимирует только transform/opacity — композитор, 60 fps",
+  "io.unobserve() после появления — на длинной странице нет сотен подписок",
+  "prefers-reduced-motion: reduce — анимации отключены, блоки видны сразу",
+  "Стаггер сеток — через transition-delay, а не setTimeout-лесенки",
 ];
 
 function Logo() {
@@ -77,7 +92,7 @@ export default function App() {
       const saved = Number(localStorage.getItem(STEP_KEY));
       if (saved >= 1 && saved <= 5) return saved;
     } catch { /* noop */ }
-    return 3;
+    return 4;
   });
   const [visited, setVisited] = useState<Set<number>>(() => {
     try {
@@ -290,14 +305,25 @@ export default function App() {
               <StepCode
                 num="04"
                 title="front-page.php и лёгкие анимации"
-                lead="Главная собирается из template-parts как из деталей. Анимации появления — только transform и opacity на Intersection Observer: дёшево для композитора, безопасно для INP. Ниже — живое демо приёма."
+                lead="Главная собирается из template-parts как из деталей: шаблон держит только порядок секций. Анимации появления — только transform и opacity на Intersection Observer: дёшево для композитора, безопасно для INP. Ниже — схема сборки, живое демо приёма и лаборатория рендера."
                 files={STEP4_FILES}
                 notes={STEP4_NOTES}
                 onPrev={() => go(3)}
                 onNext={() => go(5)}
               >
                 <Reveal>
+                  <AssemblyMap />
+                </Reveal>
+                <Reveal delay={80}>
                   <RevealDemo />
+                </Reveal>
+                <Reveal delay={120}>
+                  <PipelineLab />
+                </Reveal>
+                <Reveal delay={160}>
+                  <div className="max-w-xl">
+                    <Checklist items={FRONT_CHECKS} storageKey="karkas-front-checks" />
+                  </div>
                 </Reveal>
               </StepCode>
             )}

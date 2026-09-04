@@ -18,11 +18,11 @@ export function Checklist({ items, storageKey = STORAGE_KEY }: { items: string[]
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
+      localStorage.setItem(storageKey, JSON.stringify(checked));
     } catch {
       /* noop */
     }
-  }, [checked]);
+  }, [checked, storageKey]);
 
   const done = checked.filter(Boolean).length;
   const total = items.length;
