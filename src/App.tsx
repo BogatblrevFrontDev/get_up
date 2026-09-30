@@ -8,6 +8,8 @@ import { FontSpec } from "./components/FontSpec";
 import { AssemblyMap } from "./components/AssemblyMap";
 import { PipelineLab } from "./components/PipelineLab";
 import { RevealDemo } from "./components/RevealDemo";
+import { LeadFormDemo } from "./components/LeadFormDemo";
+import { SecurityGuards } from "./components/SecurityGuards";
 import { FlowDiagram } from "./components/FlowDiagram";
 import { Checklist } from "./components/Checklist";
 import { Toaster } from "./components/Toaster";
@@ -40,8 +42,8 @@ const TICKER = [
   "LCP · CLS · INP",
 ];
 
-// r4: чертёж открыт на текущем листе диалога (Шаг 04)
-const STEP_KEY = "karkas-active-step-r4";
+// r5: чертёж открыт на текущем листе диалога (Шаг 05)
+const STEP_KEY = "karkas-active-step-r5";
 const VISITED_KEY = "karkas-visited-steps";
 
 const A11Y_CHECKS = [
@@ -92,7 +94,7 @@ export default function App() {
       const saved = Number(localStorage.getItem(STEP_KEY));
       if (saved >= 1 && saved <= 5) return saved;
     } catch { /* noop */ }
-    return 4;
+    return 5;
   });
   const [visited, setVisited] = useState<Set<number>>(() => {
     try {
@@ -332,7 +334,7 @@ export default function App() {
               <StepCode
                 num="05"
                 title="AJAX-форма заявки → Telegram"
-                lead="Лид уходит через WP REST API напрямую в Telegram Bot API: валидация в args, nonce против CSRF, honeypot против ботов, rate-limit на транзиентах. Ни одного плагина форм."
+                lead="Лид уходит через WP REST API напрямую в Telegram Bot API: валидация в args, nonce против CSRF, honeypot против ботов, rate-limit на транзиентах. Ни одного плагина форм. Ниже — живая демо-форма, схема безопасности и инструкция подключения бота."
                 files={STEP5_FILES}
                 notes={STEP5_NOTES}
                 onPrev={() => go(4)}
@@ -340,13 +342,19 @@ export default function App() {
                 onNext={() => go(1)}
               >
                 <Reveal>
+                  <LeadFormDemo />
+                </Reveal>
+                <Reveal delay={80}>
                   <FlowDiagram />
                 </Reveal>
+                <Reveal delay={120}>
+                  <SecurityGuards />
+                </Reveal>
                 <div className="grid gap-8 lg:grid-cols-2">
-                  <Reveal delay={60}>
+                  <Reveal delay={160}>
                     <Checklist items={SECURITY_CHECKS} />
                   </Reveal>
-                  <Reveal delay={120}>
+                  <Reveal delay={200}>
                     <div className="flex h-full flex-col border-2 border-ink bg-panel">
                       <div className="flex items-center gap-3 border-b-2 border-ink px-4 py-3">
                         <svg width="16" height="16" viewBox="0 0 16 16" className="text-accent" aria-hidden="true">
